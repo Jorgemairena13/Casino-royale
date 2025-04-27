@@ -3,8 +3,73 @@ from Recursos.juegos import *
 from Recursos.base_datos import *
 
 
+import sqlite3
+from os import system
+from rich import print 
+from rich.panel import Panel
+from rich.align import Align
+from prompt_toolkit import prompt
+from prompt_toolkit.styles import Style
+from rich.table import Table
+from prompt_toolkit.completion import FuzzyWordCompleter
+from rich.console import Console
+from datetime import datetime
+from time import sleep
+
+
+
+console = Console()
+
+style = Style.from_dict({
+    'prompt': 'bold fg:#ffb027',
+    '': 'fg:#ffffff'
+})
+
+gestion_db = Base_de_datos()
 def main():
-    
+    # Validamos el inicio de sesion
+    while True:
+
+        opcion = prompt('1. Si estas registrado\n2. Para registrarte\n',style=style)
+        if opcion =='1':
+
+                # Pedimos el email
+                email = prompt("Introduce tu correo de inicio de sesion: ",style=style)
+
+                # Pedimos la contraseña
+                contrasena = prompt('Introduce tu contraseña: ',style=style)
+
+                # Validamos la sesion
+                validar_entrada = gestion_db.iniciar_sesion(email,contrasena)
+
+                if validar_entrada:
+                    console.print(Panel(f'[bold #24fc69]Has iniciado sesion correctamente[/]',border_style='#24fc69',expand=False,width=30))
+                    break
+                else:
+                    
+                    continue
+        elif opcion == '2':
+                # Pedimos los datos de registro
+                nombre = prompt('Introduce el tu nombre: ',style=style)
+                correo = prompt('Correo de inicio de sesion: ',style=style)
+                while True:
+                            try:
+                                fecha = prompt('Introduce la fecha de nacimiento [dd/mm/aa]: ', style=style)
+                                # Combrobamos que este vacia por si no quiere editar los datos
+                                datetime.strptime(fecha, '%d/%m/%Y')
+                                break
+                            except:
+                                console.print("[bold red]Fecha inválida[/]")
+                                continue
+                contrase = prompt('Intreduce tu contraseña: ',style=style)
+                saldo = float(prompt('Saldo para iniciar la cuenta: ',style=style))
+
+                if gestion_db.agregar_usuario(nombre,saldo,correo,fecha,contrase):
+                    break
+                    
+                else:
+                    continue
+                
     
     while True:
         opcion = menu_principal()
@@ -57,7 +122,7 @@ def main():
             - Intente llegar a 21 sin pasarse
             - Gane al crupier para duplicar su apuesta
             """)
-            input("\nPresione Enter para volver al menú principal...")
+            prompt("\nPresione Enter para volver al menú principal...")
             
         elif opcion == "6":
             limpiar_pantalla()
@@ -74,7 +139,7 @@ def main():
             - Ruleta: 0
             - Black Jack: 0
             """)
-            input("\nPresione Enter para volver al menú principal...")
+            prompt("\nPresione Enter para volver al menú principal...")
             
         elif opcion == "0":
             limpiar_pantalla()

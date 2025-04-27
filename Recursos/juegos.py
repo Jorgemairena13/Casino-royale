@@ -1,18 +1,30 @@
 import random
 import time
 import os
-from Recursos.juegos import *
-from Recursos.interfaz import *
 
+def limpiar_pantalla():
+    os.system('cls')
+
+
+class Juego:
+    def __init__(self, nombre: str, apuesta_min: int, apuesta_max: int, saldo_inicial: int = 100):
+        self.nombre = nombre                        # Nombre del juego
+        self.apuesta_min = apuesta_min              # Apuesta mínima permitida
+        self.apuesta_max = apuesta_max              # Apuesta máxima permitida
+        self.saldo_jugador = saldo_inicial          # Saldo actual del jugador
+        self.apuesta_actual = 0                     # Apuesta de la ronda en curso
+        self.resultado = None                       # Resultado de la ronda
+        self.multiplicador_pago = 0.0               # Factor de pago de la ronda
+        self.historial = []                         # Registro de rondas jugadas
+        self.rng = random.Random()                  # Generador de aleatorios
 # Tus símbolos
 SIMBOLOS = ['🍒','🔔','💎','🍀','⭐','7️⃣']
 
 # Función que limpia la pantalla
-def clear_screen():
-    os.system('cls' if os.name == 'nt' else 'clear')
+
 
 # Plantilla completa de la máquina ASCII, con marcadores para los carretes
-def render_maquina(r):
+def maquina_slots(r):
     return f"""
     ╔═════════════════════════════════════════════════════════════════╗
     ║                         ╭─────────────╮                         ║
@@ -59,13 +71,13 @@ def animar_maquina(iteraciones=30, delay=0.08):
     ultima = None
     for _ in range(iteraciones):
         reels = [random.choice(SIMBOLOS) for _ in range(3)]
-        clear_screen()
-        print(render_maquina(reels))
+        limpiar_pantalla()
+        print(maquina_slots(reels))
         time.sleep(delay)
         ultima = reels
     # Muestra el resultado final fijo
-    clear_screen()
-    print(render_maquina(ultima))
+    limpiar_pantalla()
+    print(maquina_slots(ultima))
     
     # Verificar si hay premio
     if ultima[0] == ultima[1] == ultima[2]:
@@ -89,3 +101,6 @@ def animar_maquina(iteraciones=30, delay=0.08):
         print("¡Inténtalo de nuevo!")
     
     return ultima
+
+print(animar_maquina())
+input()
