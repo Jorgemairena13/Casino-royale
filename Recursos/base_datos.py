@@ -14,6 +14,19 @@ from time import sleep
 console = Console()
 
 class Base_de_datos():
+
+    def crear_tabla(self):
+        conn = sqlite3.connect('casino_royale.db')
+        c = conn.cursor()
+        c.execute("""CREATE TABLE IF NOT EXISTS usuarios (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nombre TEXT NOT NULL,
+    saldo REAL DEFAULT 0,
+    correo TEXT NOT NULL UNIQUE,
+    fecha_nacimiento DATE NOT NULL,
+    contrasena TEXT NOT NULL);""")
+        conn.commit()
+
     
     
 
@@ -71,13 +84,7 @@ class Base_de_datos():
     
 
     
-conn = sqlite3.connect('casino_royale.db')
-c = conn.cursor()
-c.execute("""UPDATE usuarios
-SET correo = 'jorge@'
-WHERE id = 1 """)
-conn.commit()
-conn.close()
+
 
 
 

@@ -16,7 +16,7 @@ from rich.console import Console
 from datetime import datetime
 from time import sleep
 
-
+os.system('chcp 65001') 
 
 console = Console()
 
@@ -26,49 +26,54 @@ style = Style.from_dict({
 })
 
 gestion_db = Base_de_datos()
+
+gestion_db.crear_tabla()
+
+
 def main():
     # Validamos el inicio de sesion
-    while True:
+    # while True:
 
-        opcion = prompt('1. Si estas registrado\n2. Para registrarte\n',style=style)
-        if opcion =='1':
+        # opcion = prompt('1. Si estas registrado\n2. Para registrarte\n',style=style)
+        # if opcion =='1':
 
-                # Pedimos el email
-                email = prompt("Introduce tu correo de inicio de sesion: ",style=style)
+        #         # Pedimos el email
+        #         email = prompt("Introduce tu correo de inicio de sesion: ",style=style)
 
-                # Pedimos la contraseña
-                contrasena = prompt('Introduce tu contraseña: ',style=style)
+        #         # Pedimos la contraseña
+        #         contrasena = prompt('Introduce tu contraseña: ',style=style)
 
-                # Validamos la sesion
-                validar_entrada = gestion_db.iniciar_sesion(email,contrasena)
+        #         # Validamos la sesion
+        #         validar_entrada = gestion_db.iniciar_sesion(email,contrasena)
 
-                if validar_entrada:
-                    console.print(Panel(f'[bold #24fc69]Has iniciado sesion correctamente[/]',border_style='#24fc69',expand=False,width=30))
-                    break
-                else:
+        #         if validar_entrada:
+        #             console.print(Panel(f'[bold #24fc69]Has iniciado sesion correctamente[/]',border_style='#24fc69',expand=False,width=30))
+        #             prompt("Pulsa enter para continuar")
+        #             break
+        #         else:
                     
-                    continue
-        elif opcion == '2':
-                # Pedimos los datos de registro
-                nombre = prompt('Introduce el tu nombre: ',style=style)
-                correo = prompt('Correo de inicio de sesion: ',style=style)
-                while True:
-                            try:
-                                fecha = prompt('Introduce la fecha de nacimiento [dd/mm/aa]: ', style=style)
-                                # Combrobamos que este vacia por si no quiere editar los datos
-                                datetime.strptime(fecha, '%d/%m/%Y')
-                                break
-                            except:
-                                console.print("[bold red]Fecha inválida[/]")
-                                continue
-                contrase = prompt('Intreduce tu contraseña: ',style=style)
-                saldo = float(prompt('Saldo para iniciar la cuenta: ',style=style))
+        #             continue
+        # elif opcion == '2':
+        #         # Pedimos los datos de registro
+        #         nombre = prompt('Introduce el tu nombre: ',style=style)
+        #         correo = prompt('Correo de inicio de sesion: ',style=style)
+        #         while True:
+        #                     try:
+        #                         fecha = prompt('Introduce la fecha de nacimiento [dd/mm/aa]: ', style=style)
+        #                         # Combrobamos que este vacia por si no quiere editar los datos
+        #                         datetime.strptime(fecha, '%d/%m/%Y')
+        #                         break
+        #                     except:
+        #                         console.print("[bold red]Fecha inválida[/]")
+        #                         continue
+        #         contrase = prompt('Intreduce tu contraseña: ',style=style)
+        #         saldo = float(prompt('Saldo para iniciar la cuenta: ',style=style))
 
-                if gestion_db.agregar_usuario(nombre,saldo,correo,fecha,contrase):
-                    break
+        #         if gestion_db.agregar_usuario(nombre,saldo,correo,fecha,contrase):
+        #             break
                     
-                else:
-                    continue
+        #         else:
+        #             continue
                 
     
     while True:
@@ -79,7 +84,13 @@ def main():
                 opcion_tragamonedas = menu_tragamonedas()
                 if opcion_tragamonedas == "0":
                     break
-                mostrar_mensaje_carga("Cargando tragamonedas")
+                elif opcion == "1":
+                    mostrar_mensaje_carga("Cargando tragamonedas")
+                    slots = Maquina_slots("Slots",1,100,100)
+                    premio = slots.animar_maquina()
+                    print(premio)
+                    prompt()
+                     
                 
         elif opcion == "2":
             while True:
