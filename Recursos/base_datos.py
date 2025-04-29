@@ -80,10 +80,6 @@ class Base_de_datos():
             console.print(Panel(f'[bold red]Error: {str(e)}[/]', border_style="red", width=30))
             return False
 
-    
-    
-
-    
 
 
 
