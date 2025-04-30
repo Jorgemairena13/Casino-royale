@@ -97,7 +97,7 @@ def menu_gestionar_saldo():
 def mostrar_mensaje_carga(mensaje):
     print(f"\n{mensaje}", end='')
     for _ in range(3):
-        time.sleep(0.5)
+        time.sleep(0.01)
         print(".", end='', flush=True)
     print("\n")
 

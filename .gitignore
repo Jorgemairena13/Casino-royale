@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Ignore Python cache files
 __pycache__/
 *.pyc
@@ -6,3 +7,14 @@ __pycache__/
 # Ignorar base de datos
 
 *.db
+=======
+# Ignorar archivos de base de datos
+*.db
+*.sqlite
+*.sqlite3
+
+# Ignorar caché de Python
+__pycache__/
+*.py[cod]
+*$py.class
+>>>>>>> bdf3758a444b9104880922014816e654a1691e5f

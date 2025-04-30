@@ -81,6 +81,7 @@ def main():
         
         if opcion == "1":
             while True:
+
                 opcion_tragamonedas = menu_tragamonedas()
                 if opcion_tragamonedas == "0":
                     break
