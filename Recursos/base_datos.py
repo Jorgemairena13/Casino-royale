@@ -81,6 +81,16 @@ class Base_de_datos():
             return False
 
 
+    def sacar_saldo(self,correo):
+        conn = sqlite3.connect('casino_royale.db')
+        c = conn.cursor()
+        c.execute('SELECT saldo FROM usuarios WHERE correo = ?',(correo,))
+        saldo_usuario = c.fetchall()
+        conn.close()
+        return saldo_usuario[0][0]
+        
+        
+
 
 
 
