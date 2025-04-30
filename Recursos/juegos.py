@@ -1,7 +1,7 @@
 import random
 import time
 import os
-from emoji import emojize
+
 
 def limpiar_pantalla():
     os.system('cls')
