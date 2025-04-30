@@ -98,15 +98,15 @@ class Maquina_slots(Juegos):
                 premio = 20
             elif ultima[0] == '💎':
                 premio = 100
-            elif ultima[0] == '7️⃣':
+            elif ultima[0] == '7⃣':
                 premio = 200
             elif ultima[0] == '🍀':
                 premio = 50
             elif ultima[0] == '⭐':
                 premio = 75
             
-            if premio > 0:
-                print(f"¡GANASTE {premio} CRÉDITOS!")
+            
+            print(f"¡GANASTE {premio} CRÉDITOS!")
         else:
             print("¡Inténtalo de nuevo!")
         
