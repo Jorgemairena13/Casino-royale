@@ -99,6 +99,7 @@ def main():
                         print(premio)
                         print(f'Tu saldo es de {saldo}')
                         salida = prompt('Enter para tirar otra otra cosa para salir!!')
+                    gestion_db.actualizar_saldo('jorge@',saldo)
                      
                 
         elif opcion == "2":

@@ -88,6 +88,13 @@ class Base_de_datos():
         saldo_usuario = c.fetchall()
         conn.close()
         return saldo_usuario[0][0]
+    
+    def actualizar_saldo(self,correo, saldo):
+        conn = sqlite3.connect('casino_royale.db')
+        c = conn.cursor()
+        c.execute('UPDATE usuarios set saldo = ?  WHERE correo = ?',(saldo,correo))
+        conn.commit()
+        conn.close()
         
         
 
