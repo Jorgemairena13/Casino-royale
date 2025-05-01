@@ -101,37 +101,4 @@ def mostrar_mensaje_carga(mensaje):
         print(".", end='', flush=True)
     print("\n")
 
-import random
-import time
-import os
 
-def limpiar_pantalla():
-    os.system('cls' if os.name == 'nt' else 'clear')
-
-SIMBOLOS = ['🍒','🔔','💎','🍀','🤑','🏆']
-APARICIONES = [40,25,15,25,10,5]
-
-def animar_bajada(iteraciones=20, delay=1):
-    reels = [[random.choices(SIMBOLOS, weights=APARICIONES)[0] for _ in range(3)] for _ in range(3)]
-
-    for _ in range(iteraciones):
-        limpiar_pantalla()
-
-        # Simula que cada rodillo baja: "rotación"
-        for i in range(3):
-            reels[i] = [random.choices(SIMBOLOS, weights=APARICIONES)[0]] + reels[i][:2]
-
-        # Imprimir línea por línea
-        print("╔════════════════════════════╗")
-        print("║     🎰  MÁQUINA SLOT  🎰     ║")
-        print("╠════════════════════════════╣")
-        for fila in range(3):
-            print("║  ", end="")
-            for col in range(3):
-                print(f" {reels[col][fila]} ", end=" ")
-            print(" ║")
-        print("╚════════════════════════════╝")
-
-        time.sleep(delay)
-
-animar_bajada()

@@ -16,7 +16,6 @@ from rich.console import Console
 from datetime import datetime
 from time import sleep
 
-os.system('chcp 65001') 
 
 console = Console()
 
@@ -93,7 +92,7 @@ def main():
                     salida = ''
                     while salida == '':
                         saldo -= 5
-                        slots = Maquina_slots("Slots",1,100,100)
+                        slots = MaquinaTragaperras()
                         premio = slots
                         premio = slots.animar_maquina(saldo)
                         saldo += premio
