@@ -1,5 +1,5 @@
 from Recursos.interfaz import *
-from Recursos.juegos import *
+from Recursos.tragaperras import *
 from Recursos.base_datos import *
 
 

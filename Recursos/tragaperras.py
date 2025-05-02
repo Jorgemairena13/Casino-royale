@@ -16,8 +16,7 @@ from time import sleep
 
 console = Console()
 
-def limpiar_pantalla():
-    os.system('cls')
+
 
 
 
@@ -189,9 +188,9 @@ class MaquinaTragaperras:
         for i in range(simbolo_alto):
             linea = "║   "  # Margen izquierdo dentro del marco
             for col in range(3):
-                # Accedemos a la línea i del símbolo en la posición central (índice 1)
+                # Accedemos a la línea i del símbolo en la posición central indice 1
                 linea += r[col][1]["ascii"][i] + margen
-            linea += "║"
+            linea += "║" # Margen derecho
             lineas_centrales.append(linea)
         
         # Marco inferior con la información de premios

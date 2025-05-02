@@ -25,8 +25,7 @@ def mostrar_banner():
 
     """)
 
-def mostrar_saldo(saldo):
-    print(f"\n💰 Saldo actual: ${saldo:.2f} 💰\n")
+
 
 def menu_principal():
     limpiar_pantalla()
