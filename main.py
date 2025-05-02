@@ -1,6 +1,7 @@
 from Recursos.interfaz import *
 from Recursos.tragaperras import *
 from Recursos.base_datos import *
+from Recursos.ruleta import *
 
 
 import sqlite3
@@ -78,7 +79,6 @@ def main():
     
     while True:
         saldo = gestion_db.sacar_saldo('jorge@')
-        
         opcion = menu_principal()
         
         if opcion == "1":
@@ -105,9 +105,18 @@ def main():
         elif opcion == "2":
             while True:
                 opcion_ruleta = menu_ruleta()
+                mostrar_mensaje_carga("Preparando la ruleta")
                 if opcion_ruleta == "0":
                     break
-                mostrar_mensaje_carga("Preparando la ruleta")
+                elif opcion_ruleta == '1':
+                    ruleta = Ruleta()
+                    iteraciones = random.randint(100, 300)
+                    
+                    resultado = ruleta.animar_ruleta(39)
+                    print(resultado)
+                    prompt()
+
+                
                 
         elif opcion == "3":
             while True:
