@@ -9,6 +9,8 @@ from rich.console import Console
 from datetime import datetime
 from time import sleep
 import os
+
+import random
 console = Console()
 
 def limpiar_pantalla():
@@ -23,6 +25,8 @@ class Ruleta():
     ]
 
   def mostrar_ruleta(self,n):  
+    '''Muestra la ruleta y el tablero de la ruleta'''
+    # Tablero para que el usuario vea a que se puede apostar
     tablero_ruleta = '''
     ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
     ┃                              RULETA CASINO                              ┃
@@ -41,7 +45,7 @@ class Ruleta():
     ┃    1-18   ┃    PAR    ┃    🔴    ┃   IMPAR   ┃   19-36   ┃     ⚫       ┃
     ┗━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━━━━┛
     '''
-
+    # Ruleta con todo los indice metidos
     ruleta2 = f"""[bold #6fff90]
                   ▓▒▒▒▓▓▓▓▓▓▓▓▓▒▒▒▓               
               ▓▓▓▓█▓▓▓████[white on green]0{n[0]}[/]▓▓▓████▓▓▓▓▓           
@@ -79,26 +83,85 @@ class Ruleta():
 
 
   def animar_ruleta(self,iteraciones,delay = 0.1):
+    # Hacemos una copia para no alterar la lista original
     n = self.n.copy()
+
+    # Bola que se vera en la ruleta
     bola = '[on #ff6fde ] ⚪ [/]'
+
+    # Longitud de la ruleta
     longitud = len(n)
 
+  # Bucle que itera un numero de iteraciones ramdom
     for i in range(iteraciones):
         limpiar_pantalla()
 
+        # Calculamos el indice 
         indice = i % longitud
+
+        # Calculamos el anterior
         anterior = (i - 1) % longitud
 
-        n[anterior] = self.n[anterior]  # restaurar el anterior
-        n[indice] = bola                # colocar la bola en el nuevo índice
+        # Restauramos el anterior
+        n[anterior] = self.n[anterior]  
 
+        # Indice para colocar la bola
+        n[indice] = bola                
+
+        # Mostramos la ruleta con la bola
         console.print(self.mostrar_ruleta(n))
-        sleep(delay)
 
+        # Tiempo de espera para que parezca que se mueve
+        sleep(delay)
+    # Devolvemos el anterior mas 1 para saber donde a caido la bola 
     return  self.n[(anterior + 1) % len(self.n)]
 
       
+  def buscar_apuesta(self,dinero,apuestas_jugador,numeros_sueltos):
     
+
+    # Numeros ramdom para las vueltas de la ruleta
+    iteraciones = random.randint(100, 300)
+
+    # Animamos la ruleta y guardamos el resultado
+    resultado_rule = self.animar_ruleta(iteraciones= 39)
+    
+    for numero in numeros_sueltos:
+      if resultado_rule == numero:
+        dinero *= 35
+       
+    
+
+
+    # Listas que vamos a usar para comparar con el resultado del jugador y lo que salga en la ruleta
+    
+    # Lista de colores
+    rojos = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
+    negros = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35]
+    verde = [0] 
+
+    # Par o impar
+    pares = [n for n in range(1, 37) if n % 2 == 0]
+    impares = [n for n in range(1, 37) if n % 2 != 0]
+
+    
+    # Docenas
+    primera_docena = list(range(1, 13))     
+    segunda_docena = list(range(13, 25))    
+    tercera_docena = list(range(25, 37))    
+
+    # A nuemros altos o bajos
+    baja = list(range(1, 19))   
+    alta = list(range(19, 37))  
+
+    # Las filas del tablero
+    fila_1 = [3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36]
+    fila_2 = [2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35]
+    fila_3 = [1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34]
+
+
+    return dinero
+   
 
 
 

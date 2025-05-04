@@ -110,10 +110,66 @@ def main():
                     break
                 elif opcion_ruleta == '1':
                     ruleta = Ruleta()
-                    iteraciones = random.randint(100, 300)
+
+                    dinero = int(prompt('Cuanto dinero quieres apostar?',style=style))
+                    # Lista que pasaremos a la funcion con la apuesta del usuario
+                    apuestas_usuario = []
+
+                    # Lista autocompletado
+                    colores = ['Negro','Rojo']
+                    colores_auto = FuzzyWordCompleter(colores)
+                    # Pedimos si quiere apostar a color
+                    color = prompt('Quieres apostar a algun color?\n',style=style,completer=colores_auto)
+                    # Comprobamos que haya apostado a color
+                    if color in colores:
+                        apuestas_usuario.append(color)
+
+                    # Apuesta a par o impar
+                    par_impar_lista = ['Par','Impar']
+                    par_impar_auto = FuzzyWordCompleter(par_impar_lista)
+                    par_impar = prompt('Quieres apostar a par o impar?',style=style,completer = par_impar_auto)
+                    if par_impar in par_impar_lista:
+                        apuestas_usuario.append(par_impar)
+
+                    # Apuesta a las docenas
+                    docenas = prompt('Quieres apostar a la docenas? Numero del 1 al 3 segun la docena',style=style)
+                    if docenas in ['1','2','3']:
+                        apuestas_usuario.append(docenas)
+                    # Lista para el auto completado y para comprobar
+                    alta_baja_lista = ['Alta','Baja']
+                    # Auto completado
+                    alta_baja_auto = FuzzyWordCompleter(alta_baja_lista)
+
+                    # Le pedimos al ususario la apuesa
+                    alta_baja = prompt('Quieres apostar al baja o la alta',style=style,completer=alta_baja_auto)
+                    # Comprobamos que este en la lista
+                    if alta_baja in alta_baja_lista:
+                        # Añadimos a la lista
+                        apuestas_usuario.append(alta_baja)
+                    fila = prompt('Qures aposar a alguna fila? Numero del 1 al 3 segun la fila',style=style)
+                    if fila in ['1','2','3']:
+                        apuestas_usuario.append(fila)
+
+                    numeros_sueltos = prompt('Quieres apostar a numeros sueltos??[S/N]',style=style).upper()
+
+                    lista_numeros_sueltos = []
+                    if numeros_sueltos == 'S':
+                        numeros = prompt('Escribe los numeros que quieres apostar separados por espacios: ')
+                        # Pasamos los numeros a enteros para comprobar despues
+                        for numero in numeros.split():
+                            lista_numeros_sueltos.append(int(numero))
+                        
+                        print(lista_numeros_sueltos)
+                    for apuesta in apuestas_usuario:
+                        print(apuesta)
+                    prompt()
+                    validar_apuesta = prompt('Estan  correctas la apuestas?[S/N]').upper()
+                    if validar_apuesta == "S":
+                        resultado = ruleta.buscar_apuesta(dinero,apuestas_usuario,lista_numeros_sueltos)
                     
-                    resultado = ruleta.animar_ruleta(39)
-                    print(resultado)
+                    # Le pasamos el dinero y las apuestas del usuario
+                    
+                    console.print(Panel(f'Has ganado {resultado} €',width=30))
                     prompt()
 
                 
