@@ -88,7 +88,7 @@ def main():
                 if opcion_tragamonedas == "0":
                     break
                 elif opcion == "1":
-                    mostrar_mensaje_carga("Cargando tragamonedas")
+                    
                     salida = ''
                     while salida == '':
                         saldo -= 5
@@ -105,7 +105,7 @@ def main():
         elif opcion == "2":
             while True:
                 opcion_ruleta = menu_ruleta()
-                mostrar_mensaje_carga("Preparando la ruleta")
+                
                 if opcion_ruleta == "0":
                     break
                 elif opcion_ruleta == '1':
@@ -179,14 +179,14 @@ def main():
                 opcion_blackjack = menu_blackjack()
                 if opcion_blackjack == "0":
                     break
-                mostrar_mensaje_carga("Preparando la mesa de Black Jack")
+                
                 
         elif opcion == "4":
             while True:
                 opcion_saldo = menu_gestionar_saldo()
                 if opcion_saldo == "0":
                     break
-                mostrar_mensaje_carga("Accediendo a su cuenta")
+                
                 
         elif opcion == "5":
             limpiar_pantalla()
