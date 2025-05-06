@@ -1,7 +1,7 @@
 import random
 import time
 import os
-
+from rich.text import Text
 from rich import print 
 from rich.panel import Panel
 from rich.align import Align
