@@ -112,6 +112,7 @@ def main():
                     ruleta = Ruleta()
 
                     dinero = int(prompt('Cuanto dinero quieres apostar?',style=style))
+
                     # Lista que pasaremos a la funcion con la apuesta del usuario
                     apuestas_usuario = []
 
@@ -132,7 +133,9 @@ def main():
                         apuestas_usuario.append(par_impar)
 
                     # Apuesta a las docenas
-                    docenas = prompt('Quieres apostar a la docenas? Numero del 1 al 3 segun la docena',style=style)
+                    docenas_lista = ['1 docena','2 docena','3 docena']
+                    docenas_auto =FuzzyWordCompleter(docenas_lista)
+                    docenas = prompt('Quieres apostar a la docenas? ',style=style,completer=docenas_auto)
                     if docenas in ['1','2','3']:
                         apuestas_usuario.append(docenas)
                     # Lista para el auto completado y para comprobar
@@ -146,8 +149,10 @@ def main():
                     if alta_baja in alta_baja_lista:
                         # Añadimos a la lista
                         apuestas_usuario.append(alta_baja)
-                    fila = prompt('Qures aposar a alguna fila? Numero del 1 al 3 segun la fila',style=style)
-                    if fila in ['1','2','3']:
+                    completar_fila =['Fila 1','Fila 2','Fila 3']
+                    apuesta_fila = FuzzyWordCompleter(completar_fila)
+                    fila = prompt('Qures aposar a alguna fila? Numero del 1 al 3 segun la fila',style=style,completer=apuesta_fila).capitalize()
+                    if fila in completar_fila:
                         apuestas_usuario.append(fila)
 
                     numeros_sueltos = prompt('Quieres apostar a numeros sueltos??[S/N]',style=style).upper()

@@ -118,12 +118,13 @@ class Ruleta():
 
       
   def buscar_apuesta(self,dinero,apuestas_jugador,numeros_sueltos):
+
     # Numeros ramdom para las vueltas de la ruleta
     iteraciones = random.randint(100, 300)
 
     # Animamos la ruleta y guardamos el resultado
-    resultado_rule = self.animar_ruleta(iteraciones)
-    dinero_devolver = dinero
+    resultado_rule = self.animar_ruleta(iteraciones=38)
+    dinero_devolver = 0
 
     # Comparamos para ver si el numero del jugar es igual al numero que a salido
     for numero in numeros_sueltos:
@@ -156,7 +157,7 @@ class Ruleta():
     fila_2 = [2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35]
     fila_3 = [1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34]
 
-
+    
     return dinero_devolver
    
 
