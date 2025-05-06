@@ -159,13 +159,17 @@ def main():
                         for numero in numeros.split():
                             lista_numeros_sueltos.append(int(numero))
                         
-                        print(lista_numeros_sueltos)
+                    # Le mostramos las apuestas que a hecho   
                     for apuesta in apuestas_usuario:
                         print(apuesta)
-                    prompt()
+                    print(" ") # Espacio
+
+                    # Le pedimos confimacion
                     validar_apuesta = prompt('Estan  correctas la apuestas?[S/N]').upper()
                     if validar_apuesta == "S":
                         resultado = ruleta.buscar_apuesta(dinero,apuestas_usuario,lista_numeros_sueltos)
+                    else:
+                        break
                     
                     # Le pasamos el dinero y las apuestas del usuario
                     

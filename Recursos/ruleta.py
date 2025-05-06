@@ -128,8 +128,9 @@ class Ruleta():
     
     for numero in numeros_sueltos:
       if resultado_rule == numero:
-        dinero *= 35
-       
+        dinero_devolver = dinero * 35
+    
+    
     
 
 
@@ -160,7 +161,7 @@ class Ruleta():
     fila_3 = [1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34]
 
 
-    return dinero
+    return dinero_devolver
    
 
 
