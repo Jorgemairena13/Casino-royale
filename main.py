@@ -124,38 +124,51 @@ def main():
                     # Comprobamos que haya apostado a color
                     if color in colores:
                         apuestas_usuario.append(color)
+                    else:
+                        apuestas_usuario.append("0")
 
                     # Apuesta a par o impar
                     par_impar_lista = ['Par','Impar']
                     par_impar_auto = FuzzyWordCompleter(par_impar_lista)
-                    par_impar = prompt('Quieres apostar a par o impar?',style=style,completer = par_impar_auto)
+                    par_impar = prompt('Quieres apostar a par o impar?\n',style=style,completer = par_impar_auto).capitalize()
                     if par_impar in par_impar_lista:
                         apuestas_usuario.append(par_impar)
+                    else:
+                        apuestas_usuario.append("0")
+                    
 
                     # Apuesta a las docenas
                     docenas_lista = ['1 docena','2 docena','3 docena']
-                    docenas_auto =FuzzyWordCompleter(docenas_lista)
-                    docenas = prompt('Quieres apostar a la docenas? ',style=style,completer=docenas_auto)
-                    if docenas in ['1','2','3']:
+                    docenas_auto = FuzzyWordCompleter(docenas_lista)
+                    docenas = prompt('Quieres apostar a la docenas?\n',style=style,completer=docenas_auto)
+                    if docenas in docenas_lista:
                         apuestas_usuario.append(docenas)
+                    else:
+                        apuestas_usuario.append("0")
+                    
                     # Lista para el auto completado y para comprobar
                     alta_baja_lista = ['Alta','Baja']
                     # Auto completado
                     alta_baja_auto = FuzzyWordCompleter(alta_baja_lista)
 
                     # Le pedimos al ususario la apuesa
-                    alta_baja = prompt('Quieres apostar al baja o la alta',style=style,completer=alta_baja_auto)
+                    alta_baja = prompt('Quieres apostar al baja o la alta?\n',style=style,completer=alta_baja_auto)
                     # Comprobamos que este en la lista
                     if alta_baja in alta_baja_lista:
                         # Añadimos a la lista
                         apuestas_usuario.append(alta_baja)
+
+                    # Apuestas a las filas del tablero
                     completar_fila =['Fila 1','Fila 2','Fila 3']
                     apuesta_fila = FuzzyWordCompleter(completar_fila)
-                    fila = prompt('Qures aposar a alguna fila? Numero del 1 al 3 segun la fila',style=style,completer=apuesta_fila).capitalize()
+                    fila = prompt('Quieres aposar a alguna fila? Numero del 1 al 3 segun la fila?\n',style=style,completer=apuesta_fila).capitalize()
                     if fila in completar_fila:
                         apuestas_usuario.append(fila)
+                    else:
+                        apuestas_usuario.append("0")
 
-                    numeros_sueltos = prompt('Quieres apostar a numeros sueltos??[S/N]',style=style).upper()
+                    # Apuestas a los nuemeros sueltos
+                    numeros_sueltos = prompt('Quieres apostar a numeros sueltos??[S/N]\n',style=style).upper()
 
                     lista_numeros_sueltos = []
                     if numeros_sueltos == 'S':
@@ -163,6 +176,7 @@ def main():
                         # Pasamos los numeros a enteros para comprobar despues
                         for numero in numeros.split():
                             lista_numeros_sueltos.append(int(numero))
+                    
                         
                     # Le mostramos las apuestas que a hecho   
                     for apuesta in apuestas_usuario:

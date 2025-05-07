@@ -215,14 +215,14 @@ class MaquinaTragaperras:
         # Bucle con las iteraciones para animar la maquina
         for _ in range(iteraciones):
             # Generamos carretes aleatorios basados en los pesos
-            reels = [[random.choices(self.simbolos_lista, weights=self.pesos, k=1)[0] for _ in range(3)] for _ in range(3)]
+            carretes = [[random.choices(self.simbolos_lista, weights=self.pesos, k=1)[0] for _ in range(3)] for _ in range(3)]
 
             limpiar_pantalla()
             # Mostramos la maquina de slots 
-            console.print(self.maquina_slots(reels, saldo_pasar, premio))
+            console.print(self.maquina_slots(carretes, saldo_pasar, premio))
 
             # Guardamos la lista de la última iteración
-            ultima = reels
+            ultima = carretes
 
             # Damos una pausa
             time.sleep(delay)

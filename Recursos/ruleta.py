@@ -123,7 +123,7 @@ class Ruleta():
     iteraciones = random.randint(100, 300)
 
     # Animamos la ruleta y guardamos el resultado
-    resultado_rule = self.animar_ruleta(iteraciones=38)
+    resultado_rule = self.animar_ruleta(iteraciones)
     dinero_devolver = 0
 
     # Comparamos para ver si el numero del jugar es igual al numero que a salido
@@ -157,7 +157,34 @@ class Ruleta():
     fila_2 = [2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35]
     fila_3 = [1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34]
 
-    
+
+    # Logica de las apuestas
+
+    # Logica si hace apuestas a los colores
+    if apuestas_jugador[0] == "0": # Si es cero significa que no ha puesto nada
+      pass
+
+    elif apuestas_jugador[0] == "Rojo": # Si a puesto rojo
+      if resultado_rule in rojos: # Comprobamos que el numero que haya salido sea rojo
+        dinero_devolver = dinero * 2
+
+    elif apuestas_jugador[0] == "Negro": # Si a puesto negro
+      if resultado_rule in negros: # Comprobamos que el numero que haya salido sea negro
+        dinero_devolver = dinero * 2
+
+    # Logica de la apuesta si es par o impar
+    if apuestas_jugador[1] == "0":
+      pass
+    elif apuestas_jugador[1] == "Par":
+      if apuestas_jugador % 2 == 0:
+        dinero_devolver = dinero * 2
+    elif apuestas_jugador[1] == "Impar":
+      if apuestas_jugador % 2 != 0:
+        dinero_devolver = dinero * 2
+
+    # Logica de las docenas
+
+
     return dinero_devolver
    
 
