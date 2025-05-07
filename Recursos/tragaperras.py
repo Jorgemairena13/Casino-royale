@@ -215,7 +215,7 @@ class MaquinaTragaperras:
         # Bucle con las iteraciones para animar la maquina
         for _ in range(iteraciones):
             # Generamos carretes aleatorios basados en los pesos
-            carretes = [[random.choices(self.simbolos_lista, weights=self.pesos, k=1)[0] for _ in range(3)] for _ in range(3)]
+            carretes = [random.choices(self.simbolos_lista, weights=self.pesos, k=3) for _ in range(3)]
 
             limpiar_pantalla()
             # Mostramos la maquina de slots 

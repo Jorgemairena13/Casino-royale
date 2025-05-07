@@ -1,12 +1,5 @@
 from rich import print 
-from rich.panel import Panel
-from rich.align import Align
-from prompt_toolkit import prompt
-from prompt_toolkit.styles import Style
-from rich.table import Table
-from prompt_toolkit.completion import FuzzyWordCompleter
 from rich.console import Console
-from datetime import datetime
 from time import sleep
 import os
 
@@ -126,11 +119,16 @@ class Ruleta():
     resultado_rule = self.animar_ruleta(iteraciones)
     dinero_devolver = 0
 
+
     # Comparamos para ver si el numero del jugar es igual al numero que a salido
     for numero in numeros_sueltos:
-      if resultado_rule == numero:
-        dinero_devolver = dinero * 35
-    
+        if resultado_rule == numero:
+            dinero_devolver = dinero * 36  
+            
+        
+    # Comprobamos que no haya salido el 0 para terminar sin nada
+    if resultado_rule == 0 and 0 not in numeros_sueltos:
+        return 0
     # Listas que vamos a usar para comparar con el resultado del jugador y lo que salga en la ruleta
     
     # Lista de colores
@@ -138,11 +136,6 @@ class Ruleta():
     negros = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35]
     verde = [0] 
 
-    # Par o impar
-    pares = [n for n in range(1, 37) if n % 2 == 0]
-    impares = [n for n in range(1, 37) if n % 2 != 0]
-
-    
     # Docenas
     primera_docena = list(range(1, 13))     
     segunda_docena = list(range(13, 25))    
@@ -176,14 +169,47 @@ class Ruleta():
     if apuestas_jugador[1] == "0":
       pass
     elif apuestas_jugador[1] == "Par":
-      if apuestas_jugador % 2 == 0:
+      if resultado_rule % 2 == 0:
         dinero_devolver = dinero * 2
     elif apuestas_jugador[1] == "Impar":
-      if apuestas_jugador % 2 != 0:
+      if resultado_rule % 2 != 0:
         dinero_devolver = dinero * 2
 
     # Logica de las docenas
+    if apuestas_jugador[2] == "0":
+      pass
+    elif apuestas_jugador[2] == "1 docena":
+      if resultado_rule in primera_docena:
+        dinero_devolver = dinero * 3
+    elif apuestas_jugador[2] == "2 docena":
+      if resultado_rule in segunda_docena:
+        dinero_devolver = dinero * 3
+    elif apuestas_jugador[2] == "3 docena":
+      if resultado_rule in tercera_docena:
+        dinero_devolver = dinero * 3
 
+    # Logica de la alta y la baja
+    if apuestas_jugador[3] == "0":
+      pass
+    elif apuestas_jugador[3] == "Alta":
+      if resultado_rule in alta:
+        dinero_devolver = dinero * 2
+    elif apuestas_jugador[3] == "Baja":
+      if resultado_rule in baja:
+        dinero_devolver = dinero * 2
+    
+    # Logica de las filas
+    if apuestas_jugador[4] == "0":
+      pass
+    elif apuestas_jugador[4] == "Fila 1":
+      if resultado_rule in fila_1:
+        dinero_devolver = dinero * 3
+    elif apuestas_jugador[4] == "Fila 2":
+      if resultado_rule in fila_2:
+        dinero_devolver = dinero * 3
+    elif apuestas_jugador[4] == "Fila 3":
+      if resultado_rule in fila_3:
+        dinero_devolver = dinero * 3
 
     return dinero_devolver
    

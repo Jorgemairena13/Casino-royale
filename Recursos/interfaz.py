@@ -1,5 +1,5 @@
 import os
-import time
+
 from Recursos.tragaperras import *
 
 def limpiar_pantalla():

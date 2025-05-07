@@ -112,7 +112,7 @@ def main():
                     ruleta = Ruleta()
 
                     dinero = int(prompt('Cuanto dinero quieres apostar?',style=style))
-
+                    saldo -= dinero
                     # Lista que pasaremos a la funcion con la apuesta del usuario
                     apuestas_usuario = []
 
@@ -193,6 +193,8 @@ def main():
                     # Le pasamos el dinero y las apuestas del usuario
                     
                     console.print(Panel(f'Has ganado {resultado} €',width=30))
+                    saldo+=resultado
+                    gestion_db.actualizar_saldo('jorge@',saldo)
                     prompt()
 
                 

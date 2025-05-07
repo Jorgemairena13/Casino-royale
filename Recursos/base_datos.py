@@ -1,15 +1,7 @@
 import sqlite3
-from os import system
-from rich import print 
 from rich.panel import Panel
-from rich.align import Align
-from prompt_toolkit import prompt
-from prompt_toolkit.styles import Style
-from rich.table import Table
-from prompt_toolkit.completion import FuzzyWordCompleter
 from rich.console import Console
-from datetime import datetime
-from time import sleep
+
 
 console = Console()
 
@@ -26,9 +18,6 @@ class Base_de_datos():
     fecha_nacimiento DATE NOT NULL,
     contrasena TEXT NOT NULL);""")
         conn.commit()
-
-    
-    
 
     def agregar_usuario(self,nombre,saldo,correo,fecha_nacimiento,contrase):
         conn = sqlite3.connect('casino_royale.db')
@@ -50,10 +39,6 @@ class Base_de_datos():
         conn.close()
         return True
             
-
-    def agregar_partida(self):
-        pass
-
     def iniciar_sesion(self,correo,contrasena):
         try:
             conn = sqlite3.connect('casino_royale.db')
