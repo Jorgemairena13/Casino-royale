@@ -2,7 +2,6 @@ from rich import print
 from rich.console import Console
 from time import sleep
 import os
-
 import random
 console = Console()
 

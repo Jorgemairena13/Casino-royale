@@ -111,8 +111,16 @@ def main():
                 elif opcion_ruleta == '1':
                     ruleta = Ruleta()
 
-                    dinero = int(prompt('Cuanto dinero quieres apostar?',style=style))
-                    saldo -= dinero
+                    while True:
+                        try:
+                            dinero = int(prompt('Cuanto dinero quieres apostar?', style=style))
+                            if dinero > saldo:
+                                print("No tienes suficiente saldo.")
+                            else:
+                                break
+                        except :
+                            print("Introduce un número válido.")
+
                     # Lista que pasaremos a la funcion con la apuesta del usuario
                     apuestas_usuario = []
 
@@ -157,6 +165,8 @@ def main():
                     if alta_baja in alta_baja_lista:
                         # Añadimos a la lista
                         apuestas_usuario.append(alta_baja)
+                    else:
+                        apuestas_usuario.append("0")
 
                     # Apuestas a las filas del tablero
                     completar_fila =['Fila 1','Fila 2','Fila 3']
@@ -187,18 +197,15 @@ def main():
                     validar_apuesta = prompt('Estan  correctas la apuestas?[S/N]').upper()
                     if validar_apuesta == "S":
                         resultado = ruleta.buscar_apuesta(dinero,apuestas_usuario,lista_numeros_sueltos)
+                         # Le pasamos el dinero y las apuestas del usuario
+                        console.print(Panel(f'Has ganado {resultado} €',width=30))
+                        saldo+=resultado
+                        gestion_db.actualizar_saldo('jorge@',saldo)
+                        prompt()
                     else:
                         break
                     
-                    # Le pasamos el dinero y las apuestas del usuario
-                    
-                    console.print(Panel(f'Has ganado {resultado} €',width=30))
-                    saldo+=resultado
-                    gestion_db.actualizar_saldo('jorge@',saldo)
-                    prompt()
-
-                
-                
+                   
         elif opcion == "3":
             while True:
                 opcion_blackjack = menu_blackjack()
