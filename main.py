@@ -2,6 +2,7 @@ from Recursos.interfaz import *
 from Recursos.tragaperras import *
 from Recursos.base_datos import *
 from Recursos.ruleta import *
+from Recursos.black_jack import *
 
 
 import sqlite3
@@ -182,7 +183,7 @@ def main():
 
                     lista_numeros_sueltos = []
                     if numeros_sueltos == 'S':
-                        numeros = prompt('Escribe los numeros que quieres apostar separados por espacios: ')
+                        numeros = prompt('Escribe los numeros que quieres apostar separados por espacios: ',style=style)
                         # Pasamos los numeros a enteros para comprobar despues
                         for numero in numeros.split():
                             lista_numeros_sueltos.append(int(numero))
@@ -190,11 +191,11 @@ def main():
                         
                     # Le mostramos las apuestas que a hecho   
                     for apuesta in apuestas_usuario:
-                        print(apuesta)
+                        console.print(Panel(apuesta),width=30)
                     print(" ") # Espacio
 
                     # Le pedimos confimacion
-                    validar_apuesta = prompt('Estan  correctas la apuestas?[S/N]').upper()
+                    validar_apuesta = prompt('Estan  correctas la apuestas?[S/N]: ',style=style).upper()
                     if validar_apuesta == "S":
                         resultado = ruleta.buscar_apuesta(dinero,apuestas_usuario,lista_numeros_sueltos)
                          # Le pasamos el dinero y las apuestas del usuario
@@ -211,6 +212,12 @@ def main():
                 opcion_blackjack = menu_blackjack()
                 if opcion_blackjack == "0":
                     break
+                elif opcion_blackjack == "1":
+                    jugador = Jugador()
+                    crupier = Crupier()
+                    console.print(crupier.mostrar_primera_carta("j"))
+                    prompt()
+                    
                 
                 
         elif opcion == "4":
