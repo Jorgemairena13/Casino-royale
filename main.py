@@ -97,6 +97,7 @@ def main():
                         premio = slots
                         premio = slots.animar_maquina(saldo)
                         saldo += premio
+                        
                         print(premio)
                         print(f'Tu saldo es de {saldo}')
                         salida = prompt('Enter para tirar otra otra cosa para salir!!')
@@ -111,7 +112,7 @@ def main():
                     break
                 elif opcion_ruleta == '1':
                     ruleta = Ruleta()
-
+                    
                     while True:
                         try:
                             dinero = int(prompt('Cuanto dinero quieres apostar?', style=style))
@@ -213,10 +214,39 @@ def main():
                 if opcion_blackjack == "0":
                     break
                 elif opcion_blackjack == "1":
-                    jugador = Jugador()
-                    crupier = Crupier()
-                    console.print(crupier.mostrar_primera_carta("j"))
+                    # Le pedimos el dinero de la apuesta que quiere hacer
+                    console.print(Panel(f'Tu saldo es de {saldo}',width=30))
+                    apuesta_black = int(prompt('Cuanto dinero quieres apostar?',style=style))
+
+                    # Creamos un objeto juego
+                    juego = Black_jack(apuesta_black)
+                    limpiar_pantalla()
+
+                    # Le mostramos el saldo que tiene
+                    console.print(Panel(f'Tu saldo es de {saldo}'))
+                    # Iniciamos el juego y sacamos el saldo que vamos a delver
+                    saldo = juego.iniciar_juego()
+                    gestion_db.actualizar_saldo('jorge@',saldo)
                     prompt()
+
+                    # Le preguntamos si quiere jugar otra vez
+                    jugar_otra_vez = prompt("\n¿Quieres jugar otra partida? (s/n): ",style=style).lower()
+                    while jugar_otra_vez == 's':
+
+                        # Le mostramos el saldo disponible
+                        console.print(Panel(f'Tu saldo es de {saldo}',width=30))
+                        # Le pedimos la apuesta
+                        apuesta_black = int(prompt('Cuanto dinero quieres apostar?',style=style))
+
+                        # Hacemos lo mismo que cuando juega por primera vez
+                        juego = Black_jack(apuesta_black)
+                        saldo = juego.iniciar_juego()
+                        gestion_db.actualizar_saldo('jorge@',saldo)
+                        jugar_otra_vez = input("\n¿Quieres jugar otra partida? (s/n): ").lower()
+                        
+                        
+                    print("¡Gracias por jugar! ¡Hasta la próxima!")
+                    limpiar_pantalla()
                     
                 
                 

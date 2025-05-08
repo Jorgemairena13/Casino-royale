@@ -19,7 +19,7 @@ class Ruleta():
   def mostrar_ruleta(self,n):  
     '''Muestra la ruleta y el tablero de la ruleta'''
     # Tablero para que el usuario vea a que se puede apostar
-    tablero_ruleta = '''
+    self.tablero_ruleta = '''
     ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
     ┃                              RULETA CASINO                              ┃
     ┣━━━━━━━┳━━━━━┳━━━━━┳━━━━━┳━━━━━┳━━━━━┳━━━━━┳━━━━━┳━━━━━┳━━━━━┳━━━━━┳━━━━━┫
@@ -70,7 +70,7 @@ class Ruleta():
               ▓▒▓▓██▓▓▓[white on black]0{n[19]}[/]▓█[white on red]{n[18]}[/]██▓[white on black]{n[17]}[/]▓▓▓███▓▓          
                   ▒▒▒▒▓▓▓▓▓▓▓▓▓▒▒▒▒   [/]            
     """
-    return ruleta2 + tablero_ruleta
+    return ruleta2 + self.tablero_ruleta
     
 
 
@@ -133,7 +133,7 @@ class Ruleta():
     # Lista de colores
     rojos = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
     negros = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35]
-    verde = [0] 
+    
 
     # Docenas
     primera_docena = list(range(1, 13))     

@@ -16,10 +16,6 @@ from time import sleep
 
 console = Console()
 
-
-
-
-
 def limpiar_pantalla():
     """Limpia la pantalla según el sistema operativo."""
     os.system('cls' if os.name == 'nt' else 'clear')
