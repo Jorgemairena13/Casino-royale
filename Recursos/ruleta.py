@@ -75,7 +75,6 @@ class Ruleta():
 
 
   def animar_ruleta(self,iteraciones,delay = 0.1):
-    # Hacemos una copia para no alterar la lista original
     n = self.n.copy()
 
     # Bola que se vera en la ruleta
@@ -84,7 +83,7 @@ class Ruleta():
     # Longitud de la ruleta
     longitud = len(n)
 
-  # Bucle que itera un numero de iteraciones ramdom
+    # Bucle que itera un numero de iteraciones random
     for i in range(iteraciones):
         limpiar_pantalla()
 
@@ -105,14 +104,29 @@ class Ruleta():
 
         # Tiempo de espera para que parezca que se mueve
         sleep(delay)
-    # Devolvemos el anterior mas 1 para saber donde a caido la bola 
-    return  self.n[(anterior + 1) % len(self.n)]
+    
+    # Posición final donde cae la bola
+    posicion_final = (iteraciones - 1) % longitud
+    
+    # Restauramos el último valor para que se muestre correctamente
+    n[posicion_final] = self.n[posicion_final]
+    
+    # Mostramos la ruleta final con el resultado
+    limpiar_pantalla()
+    console.print(self.mostrar_ruleta(n))
+    
+    # Resaltamos el resultado
+    resultado = self.n[posicion_final]
+    console.print(f"[bold yellow]¡La bola ha caído en el número {resultado}![/]")
+    
+    # Devolvemos el número donde cayó la bola
+    return resultado
 
       
   def buscar_apuesta(self,dinero,apuestas_jugador,numeros_sueltos):
 
     # Numeros ramdom para las vueltas de la ruleta
-    iteraciones = random.randint(100, 300)
+    iteraciones = random.randint(50, 200)
 
     # Animamos la ruleta y guardamos el resultado
     resultado_rule = self.animar_ruleta(iteraciones)
@@ -128,6 +142,7 @@ class Ruleta():
     # Comprobamos que no haya salido el 0 para terminar sin nada
     if resultado_rule == 0 and 0 not in numeros_sueltos:
         return 0
+    
     # Listas que vamos a usar para comparar con el resultado del jugador y lo que salga en la ruleta
     
     # Lista de colores

@@ -43,6 +43,7 @@ gestion_db = Base_de_datos()
 
 gestion_db.crear_tabla_usuarios()
 gestion_db.crear_tabla_historial()
+gestion_db.crear_tabla_tragaperras()
 
 
 def main():
@@ -93,7 +94,8 @@ def main():
                 
     
     while True:
-        saldo = gestion_db.sacar_saldo('jorge@')
+        correo = 'jorge@'
+        saldo = gestion_db.sacar_saldo(correo)
         opcion = menu_principal()
         
         if opcion == "1":
@@ -110,12 +112,13 @@ def main():
                         slots = MaquinaTragaperras()
                         premio = slots
                         premio = slots.animar_maquina(saldo)
+                        gestion_db.actualizar_partidas_tragaperras(correo,premio)
                         saldo += premio
                         
                         print(premio)
                         print(f'Tu saldo es de {saldo}')
                         salida = prompt('Enter para tirar otra otra cosa para salir!!',style=style)
-                    gestion_db.actualizar_saldo('jorge@',saldo)
+                    gestion_db.actualizar_saldo(correo,saldo)
                      
                 
         elif opcion == "2":
@@ -127,15 +130,7 @@ def main():
                 elif opcion_ruleta == '1':
                     ruleta = Ruleta()
                     
-                    while True:
-                        try:
-                            dinero = int(prompt('Cuanto dinero quieres apostar?', style=style))
-                            if dinero > saldo:
-                                console.print(Panel("[#fd0000 ]No tienes suficiente saldo.[/]",border_style="#fd0000 "))
-                            else:
-                                break
-                        except :
-                            print("Introduce un número válido.")
+                    dinero = validar_saldo(saldo)
 
                     # Lista que pasaremos a la funcion con la apuesta del usuario
                     apuestas_usuario = []
@@ -216,7 +211,7 @@ def main():
                          # Le pasamos el dinero y las apuestas del usuario
                         console.print(Panel(f'Has ganado {resultado} €',width=30))
                         saldo+=resultado
-                        gestion_db.actualizar_saldo('jorge@',saldo)
+                        gestion_db.actualizar_saldo(correo,saldo)
                         prompt()
                     else:
                         break
@@ -243,7 +238,7 @@ def main():
                     ganado_black = juego.iniciar_juego()
                     console.print(Panel(f'Has ganado {ganado_black}'))
                     saldo += ganado_black
-                    gestion_db.actualizar_saldo('jorge@',saldo)
+                    gestion_db.actualizar_saldo(correo,saldo)
                     prompt()
 
                     # Le preguntamos si quiere jugar otra vez
@@ -260,11 +255,11 @@ def main():
                         ganado_black = juego.iniciar_juego()
                         console.print(Panel(f'Has ganado {ganado_black}'))
                         saldo += ganado_black
-                        gestion_db.actualizar_saldo('jorge@',saldo)
+                        gestion_db.actualizar_saldo(correo,saldo)
                         jugar_otra_vez = prompt("\n¿Quieres jugar otra partida? (s/n): ",style=style).lower()
                         
                         
-                    console.print(Panel("[#fdf500]¡Gracias por jugar! ¡Hasta la próxima![#fdf500 ]",border_style="#fdf500 "))
+                    console.print(Panel("[#fdf500]¡Gracias por jugar! ¡Hasta la próxima![#fdf500]",border_style="#fdf500"))
                     limpiar_pantalla()
                     
                 
@@ -277,9 +272,16 @@ def main():
                 elif opcion_saldo == "1":
                     saldo_actualizar = int(prompt("Cuanto saldo quieres añadir?\n",style=style))
                     saldo += saldo_actualizar
-                    gestion_db.actualizar_saldo("jorge@",saldo)
+                    gestion_db.actualizar_saldo(correo,saldo)
+                    gestion_db.actualizar_historial_transacciones(saldo_actualizar,correo)
                     console.print(Panel(f"[#fdf500]Tu saldo es de {saldo}[/]\n",border_style="#fdf500 ",width=40))
                     prompt("\nPresione Enter para volver al menú principal...",style=style)
+
+                elif opcion_saldo == '2':
+                    resultados = gestion_db.mostrar_historial(correo)
+                    for dato in resultados:
+                        print(dato[0],dato[1],dato[2])
+                    prompt()
                 
                 
         elif opcion == "5":
@@ -323,7 +325,7 @@ def main():
             
         elif opcion == "0":
             limpiar_pantalla()
-            console.print("""[#2848ff ]
+            console.print("""[#2848ff]
             🎰 ¡Gracias por jugar en CASINO ROYALE! 🎰
             ========================================
                     ¡Vuelva pronto![/] 👋

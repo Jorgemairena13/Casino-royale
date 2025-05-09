@@ -1,7 +1,7 @@
 import sqlite3
 from rich.panel import Panel
 from rich.console import Console
-
+from datetime import datetime
 
 console = Console()
 
@@ -108,13 +108,79 @@ class Base_de_datos():
         conn.commit()
         conn.close()
 
-    def actualizar_historial_transacciones(self,dinero_ingresado,correo,fecha):
+    def actualizar_historial_transacciones(self,dinero_ingresado,correo):
+        # Conectamos a la base de datos
         conn = sqlite3.connect('casino_royale.db')
         c = conn.cursor()
+        # Ejecutamos para que las claves foraneas funcionen
         c.execute("PRAGMA foreign_keys = ON;")
+        
+        # Sacamos el id del usuario
         id = self.sacar_id(correo)
-        c.execute("""INSERT IN TO historial (dinero,id_usuario,fecha_transaccion)
-                   VALUES (?, ?, ?, ?)""",(dinero_ingresado,id,fecha))
+        
+        # El momento de la trasaccion que es en el momento de ahora
+        fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        # Insertamos valores en la tabla
+        c.execute("""INSERT INTO historial (dinero,id_usuario,fecha_transaccion)
+                   VALUES (?, ?, ?)""",(dinero_ingresado,id,fecha))
+        # Guardamos los cambios y cerramos conexion
+        conn.commit()
+        conn.close()
+
+    def mostrar_historial(self,correo):
+         # Conectamos a la base de datos
+        conn = sqlite3.connect('casino_royale.db')
+        c = conn.cursor()
+        # Ejecutamos para que las claves foraneas funcionen
+        c.execute("PRAGMA foreign_keys = ON;")
+        # Sacamos el id del usuario
+        id = self.sacar_id(correo)
+        c.execute('''SELECT usuarios.nombre, historial.dinero,historial.fecha_transaccion 
+                  FROM historial
+                  JOIN usuarios 
+                  ON historial.id_usuario = usuarios.id 
+                  WHERE usuarios.id = ?
+                  ORDER BY historial.fecha_transaccion
+                  ''',(id,))
+        historial=c.fetchall()
+
+        conn.close()
+        return historial
+    
+    def crear_tabla_tragaperras(self):
+        # Conectamos la base de datos
+        conn = sqlite3.connect('casino_royale.db')
+        c = conn.cursor()
+        # Claves foranes activas
+        c.execute("PRAGMA foreign_keys = ON;")
+        c.execute("""CREATE TABLE IF NOT EXISTS tragaperras (
+    id_tirada INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_usuario INTEGER NOT NULL,
+    premio INTEGER DEFAULT 0,
+    fecha DATE NOT NULL,
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id)
+    )""")
+        conn.commit()
+        conn.close()
+    
+    def actualizar_partidas_tragaperras(self,correo,premio):
+        id = self.sacar_id(correo)
+        fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        # Conectamos a la base de datos
+        conn = sqlite3.connect('casino_royale.db')
+        c = conn.cursor()
+        # Ejecutamos para que las claves foraneas funcionen
+        c.execute("PRAGMA foreign_keys = ON;")
+
+        # Insertamos datos
+        c.execute("""INSERT INTO tragaperras (id_usuario,premio,fecha)
+                   VALUES (?, ?, ?)""",(id,premio,fecha))
+
+        conn.commit()
+        conn.close()
+
+
 
 base = Base_de_datos()
 
