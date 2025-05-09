@@ -19,6 +19,19 @@ from datetime import datetime
 from time import sleep
 
 
+def validar_saldo(saldo):
+    while True:
+        try:
+            dinero_apostar = int(prompt('Cuanto dinero quieres apostar?', style=style))
+            if dinero_apostar > saldo:
+                console.print(Panel("[#fd0000 ]No tienes suficiente saldo.[/]",border_style="#fd0000 "))
+            else:
+                return dinero_apostar
+                
+        except :
+            print("Introduce un número válido.")
+
+
 console = Console()
 
 style = Style.from_dict({
@@ -28,7 +41,8 @@ style = Style.from_dict({
 
 gestion_db = Base_de_datos()
 
-gestion_db.crear_tabla()
+gestion_db.crear_tabla_usuarios()
+gestion_db.crear_tabla_historial()
 
 
 def main():
@@ -100,7 +114,7 @@ def main():
                         
                         print(premio)
                         print(f'Tu saldo es de {saldo}')
-                        salida = prompt('Enter para tirar otra otra cosa para salir!!')
+                        salida = prompt('Enter para tirar otra otra cosa para salir!!',style=style)
                     gestion_db.actualizar_saldo('jorge@',saldo)
                      
                 
@@ -117,7 +131,7 @@ def main():
                         try:
                             dinero = int(prompt('Cuanto dinero quieres apostar?', style=style))
                             if dinero > saldo:
-                                print("No tienes suficiente saldo.")
+                                console.print(Panel("[#fd0000 ]No tienes suficiente saldo.[/]",border_style="#fd0000 "))
                             else:
                                 break
                         except :
@@ -216,7 +230,8 @@ def main():
                 elif opcion_blackjack == "1":
                     # Le pedimos el dinero de la apuesta que quiere hacer
                     console.print(Panel(f'Tu saldo es de {saldo}',width=30))
-                    apuesta_black = int(prompt('Cuanto dinero quieres apostar?',style=style))
+                    
+                    apuesta_black= validar_saldo(saldo)
 
                     # Creamos un objeto juego
                     juego = Black_jack(apuesta_black)
@@ -225,7 +240,9 @@ def main():
                     # Le mostramos el saldo que tiene
                     console.print(Panel(f'Tu saldo es de {saldo}'))
                     # Iniciamos el juego y sacamos el saldo que vamos a delver
-                    saldo = juego.iniciar_juego()
+                    ganado_black = juego.iniciar_juego()
+                    console.print(Panel(f'Has ganado {ganado_black}'))
+                    saldo += ganado_black
                     gestion_db.actualizar_saldo('jorge@',saldo)
                     prompt()
 
@@ -236,16 +253,18 @@ def main():
                         # Le mostramos el saldo disponible
                         console.print(Panel(f'Tu saldo es de {saldo}',width=30))
                         # Le pedimos la apuesta
-                        apuesta_black = int(prompt('Cuanto dinero quieres apostar?',style=style))
+                        apuesta_black= validar_saldo(saldo)
 
                         # Hacemos lo mismo que cuando juega por primera vez
                         juego = Black_jack(apuesta_black)
-                        saldo = juego.iniciar_juego()
+                        ganado_black = juego.iniciar_juego()
+                        console.print(Panel(f'Has ganado {ganado_black}'))
+                        saldo += ganado_black
                         gestion_db.actualizar_saldo('jorge@',saldo)
-                        jugar_otra_vez = input("\n¿Quieres jugar otra partida? (s/n): ").lower()
+                        jugar_otra_vez = prompt("\n¿Quieres jugar otra partida? (s/n): ",style=style).lower()
                         
                         
-                    print("¡Gracias por jugar! ¡Hasta la próxima!")
+                    console.print(Panel("[#fdf500]¡Gracias por jugar! ¡Hasta la próxima![#fdf500 ]",border_style="#fdf500 "))
                     limpiar_pantalla()
                     
                 
@@ -255,29 +274,35 @@ def main():
                 opcion_saldo = menu_gestionar_saldo()
                 if opcion_saldo == "0":
                     break
+                elif opcion_saldo == "1":
+                    saldo_actualizar = int(prompt("Cuanto saldo quieres añadir?\n",style=style))
+                    saldo += saldo_actualizar
+                    gestion_db.actualizar_saldo("jorge@",saldo)
+                    console.print(Panel(f"[#fdf500]Tu saldo es de {saldo}[/]\n",border_style="#fdf500 ",width=40))
+                    prompt("\nPresione Enter para volver al menú principal...",style=style)
                 
                 
         elif opcion == "5":
             limpiar_pantalla()
-            print("""
+            print("""[#FFC300 ]
             📖 INSTRUCCIONES 📖
-            ==================
+            ==================[/][bold yellow]
             🎰 TRAGAMONEDAS:
             - Seleccione su apuesta
             - Pulse para girar
-            - ¡Consiga 3 símbolos iguales para ganar!
-
+            - ¡Consiga 3 símbolos iguales para ganar![/]
+            [bold red]
             🎲 RULETA:
             - Elija el tipo de apuesta
             - Seleccione sus números
-            - ¡Espere a que la bola se detenga!
-
+            - ¡Espere a que la bola se detenga![/]
+            [bold blue]
             🃏 BLACK JACK:
             - Apueste antes de recibir cartas
             - Intente llegar a 21 sin pasarse
-            - Gane al crupier para duplicar su apuesta
+            - Gane al crupier para duplicar su apuesta[/]
             """)
-            prompt("\nPresione Enter para volver al menú principal...")
+            prompt("\nPresione Enter para volver al menú principal...",style=style)
             
         elif opcion == "6":
             limpiar_pantalla()
@@ -294,14 +319,14 @@ def main():
             - Ruleta: 0
             - Black Jack: 0
             """)
-            prompt("\nPresione Enter para volver al menú principal...")
+            prompt("\nPresione Enter para volver al menú principal...",style=style)
             
         elif opcion == "0":
             limpiar_pantalla()
-            print("""
+            console.print("""[#2848ff ]
             🎰 ¡Gracias por jugar en CASINO ROYALE! 🎰
             ========================================
-                    ¡Vuelva pronto! 👋
+                    ¡Vuelva pronto![/] 👋
             """)
             break
 
