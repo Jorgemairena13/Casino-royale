@@ -44,57 +44,58 @@ gestion_db = Base_de_datos()
 gestion_db.crear_tabla_usuarios()
 gestion_db.crear_tabla_historial()
 gestion_db.crear_tabla_tragaperras()
+gestion_db.crear_tabla_ruleta()
 
 
 def main():
     #Validamos el inicio de sesion
     
-    # while True:
+    while True:
 
-    #     opcion = prompt('1. Si estas registrado\n2. Para registrarte\n',style=style)
-    #     if opcion =='1':
+        opcion = prompt('1. Si estas registrado\n2. Para registrarte\n',style=style)
+        if opcion =='1':
 
-    #             # Pedimos el email
-    #             email = prompt("Introduce tu correo de inicio de sesion: ",style=style)
+                # Pedimos el email
+                correo = prompt("Introduce tu correo de inicio de sesion: ",style=style)
 
-    #             # Pedimos la contraseña
-    #             contrasena = prompt('Introduce tu contraseña: ',style=style)
+                # Pedimos la contraseña
+                contrasena = prompt('Introduce tu contraseña: ',style=style)
 
-    #             # Validamos la sesion
-    #             validar_entrada = gestion_db.iniciar_sesion(email,contrasena)
+                # Validamos la sesion
+                validar_entrada = gestion_db.iniciar_sesion(correo,contrasena)
 
-    #             if validar_entrada:
-    #                 console.print(Panel(f'[bold #24fc69]Has iniciado sesion correctamente[/]',border_style='#24fc69',expand=False,width=30))
-    #                 prompt("Pulsa enter para continuar")
-    #                 break
-    #             else:
+                if validar_entrada:
+                    console.print(Panel(f'[bold #24fc69]Has iniciado sesion correctamente[/]',border_style='#24fc69',expand=False,width=30))
+                    prompt("Pulsa enter para continuar")
+                    break
+                else:
                     
-    #                 continue
-    #     elif opcion == '2':
-    #             # Pedimos los datos de registro
-    #             nombre = prompt('Introduce el tu nombre: ',style=style)
-    #             correo = prompt('Correo de inicio de sesion: ',style=style)
-    #             while True:
-    #                         try:
-    #                             fecha = prompt('Introduce la fecha de nacimiento [dd/mm/aa]: ', style=style)
-    #                             # Combrobamos que este vacia por si no quiere editar los datos
-    #                             datetime.strptime(fecha, '%d/%m/%Y')
-    #                             break
-    #                         except:
-    #                             console.print("[bold red]Fecha inválida[/]")
-    #                             continue
-    #             contrase = prompt('Intreduce tu contraseña: ',style=style)
-    #             saldo = float(prompt('Saldo para iniciar la cuenta: ',style=style))
+                    continue
+        elif opcion == '2':
+                # Pedimos los datos de registro
+                nombre = prompt('Introduce el tu nombre: ',style=style)
+                correo = prompt('Correo de inicio de sesion: ',style=style)
+                while True:
+                            try:
+                                fecha = prompt('Introduce la fecha de nacimiento [dd/mm/aa]: ', style=style)
+                                # Combrobamos que este vacia por si no quiere editar los datos
+                                datetime.strptime(fecha, '%d/%m/%Y')
+                                break
+                            except:
+                                console.print("[bold red]Fecha inválida[/]")
+                                continue
+                contrase = prompt('Intreduce tu contraseña: ',style=style)
+                saldo = float(prompt('Saldo para iniciar la cuenta: ',style=style))
 
-    #             if gestion_db.agregar_usuario(nombre,saldo,correo,fecha,contrase):
-    #                 break
+                if gestion_db.agregar_usuario(nombre,saldo,correo,fecha,contrase):
+                    break
                     
-    #             else:
-    #                 continue
+                else:
+                    continue
                 
     
     while True:
-        correo = 'jorge@'
+        #correo = 'jorge@'
         saldo = gestion_db.sacar_saldo(correo)
         opcion = menu_principal()
         
@@ -104,7 +105,7 @@ def main():
                 opcion_tragamonedas = menu_tragamonedas()
                 if opcion_tragamonedas == "0":
                     break
-                elif opcion == "1":
+                elif opcion_tragamonedas == "1":
                     
                     salida = ''
                     while salida == '':
@@ -119,6 +120,11 @@ def main():
                         print(f'Tu saldo es de {saldo}')
                         salida = prompt('Enter para tirar otra otra cosa para salir!!',style=style)
                     gestion_db.actualizar_saldo(correo,saldo)
+
+                elif opcion_tragamonedas == '2':
+                    id=gestion_db.sacar_id(correo)
+                    gestion_db.mostrar_partidas_tragaperras(id)
+                    prompt()
                      
                 
         elif opcion == "2":
@@ -130,7 +136,7 @@ def main():
                 elif opcion_ruleta == '1':
                     ruleta = Ruleta()
                     
-                    dinero = validar_saldo(saldo)
+                    dinero_apostado = validar_saldo(saldo)
 
                     # Lista que pasaremos a la funcion con la apuesta del usuario
                     apuestas_usuario = []
@@ -207,15 +213,25 @@ def main():
                     # Le pedimos confimacion
                     validar_apuesta = prompt('Estan  correctas la apuestas?[S/N]: ',style=style).upper()
                     if validar_apuesta == "S":
-                        resultado = ruleta.buscar_apuesta(dinero,apuestas_usuario,lista_numeros_sueltos)
+                        # Numeros ramdom para las vueltas de la ruleta
+                        iteraciones = random.randint(50, 200)
+
+                        # Animamos la ruleta y guardamos el resultado
+                        numero_ganador = ruleta.animar_ruleta(iteraciones)
+                        premio = ruleta.buscar_apuesta(dinero_apostado,apuestas_usuario,lista_numeros_sueltos,numero_ganador)
                          # Le pasamos el dinero y las apuestas del usuario
-                        console.print(Panel(f'Has ganado {resultado} €',width=30))
-                        saldo+=resultado
+                        console.print(Panel(f'Has ganado {premio} € y has apostado {dinero_apostado} y el numero es {numero_ganador}',width=30))
+                        id = gestion_db.sacar_id(correo)
+                        gestion_db.actualizar_partidas_ruleta(id,dinero_apostado,numero_ganador,premio)
+                        saldo+=premio
                         gestion_db.actualizar_saldo(correo,saldo)
                         prompt()
                     else:
                         break
-                    
+                elif opcion_ruleta == '2':
+                    id = gestion_db.sacar_id(correo)
+                    gestion_db.mostrar_datos_ruleta(id)
+                    prompt()    
                    
         elif opcion == "3":
             while True:

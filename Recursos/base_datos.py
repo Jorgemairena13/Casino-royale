@@ -2,7 +2,7 @@ import sqlite3
 from rich.panel import Panel
 from rich.console import Console
 from datetime import datetime
-
+from Recursos.tragaperras import *
 console = Console()
 
 class Base_de_datos():
@@ -180,16 +180,125 @@ class Base_de_datos():
         conn.commit()
         conn.close()
 
+    def mostrar_partidas_tragaperras(self,id_usuario):
+    
+
+        # Conexión a la base de datos
+        conn = sqlite3.connect('casino_royale.db')
+        c = conn.cursor()
+
+        # Activar claves foráneas
+        c.execute("PRAGMA foreign_keys = ON;")
+
+        # Obtener todas las partidas de tragaperras
+        c.execute("""
+        SELECT t.id_tirada, u.correo, t.premio, t.fecha
+        FROM tragaperras t
+        JOIN usuarios u ON t.id_usuario = u.id
+    """)
+        partidas = c.fetchall()
+
+        if partidas:
+            table = Table(title="Historial de Tragaperras")
+
+            table.add_column("Tirada #", style="cyan", justify="center")
+            table.add_column("Usuario", style="magenta", justify="center")
+            table.add_column("Premio (€)", style="green", justify="center")
+            table.add_column("Fecha", style="yellow", justify="center")
+
+            for partida in partidas:
+                id_usuario = partida[1]
+
+                # Obtener correo del usuario
+                c.execute("SELECT correo FROM usuarios WHERE id = ?", (id_usuario,))
+                resultado = c.fetchone()
+                correo = resultado[0] if resultado else "Desconocido"
+
+                table.add_row(
+                    str(partida[0]),
+                    correo,
+                    f"{partida[2]}€",
+                    partida[3]
+                )
+
+            console.print(table)
+        else:
+            console.print("[bold red]No hay partidas de tragaperras registradas en la base de datos.[/bold red]")
+
+        conn.close()
 
 
-base = Base_de_datos()
+#
+    def crear_tabla_ruleta(self):
+        conn = sqlite3.connect('casino_royale.db')
+        c = conn.cursor()
+        c.execute("PRAGMA foreign_keys = ON;")
+
+        # Crear tabla con clave foránea
+        c.execute("""
+            CREATE TABLE IF NOT EXISTS ruleta (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id_usuario INTEGER NOT NULL,
+                dinero_apostado INTEGER NOT NULL,
+                num_ganador INTEGER NOT NULL,
+                premio INTEGER DEFAULT 0,
+                FOREIGN KEY (id_usuario) REFERENCES usuarios(id)
+            )
+        """)
+
+        conn.commit()
+        conn.close()
 
 
+    def actualizar_partidas_ruleta(self, usuario, apuesta, ganador, premio):
+        conn = sqlite3.connect('casino_royale.db')
+        c = conn.cursor()
+        c.execute("PRAGMA foreign_keys = ON;")
 
+        c.execute("""
+            INSERT INTO ruleta (id_usuario, dinero_apostado, num_ganador, premio)
+            VALUES (?, ?, ?, ?)
+        """, (usuario, apuesta, ganador, premio))
 
+        conn.commit()
+        conn.close()
 
+    def mostrar_datos_ruleta(self,id):
+        conn = sqlite3.connect('casino_royale.db')
+        c = conn.cursor()
+        c.execute("PRAGMA foreign_keys = ON;")
 
+        # Obtenemos datos combinados de ruleta y usuarios
+        c.execute("""
+            SELECT ruleta.id, usuarios.nombre, ruleta.dinero_apostado, ruleta.num_ganador, ruleta.premio
+            FROM ruleta
+            JOIN usuarios ON ruleta.id_usuario = usuarios.id
+            WHERE usuarios.id = ?
+        """,(id,))
+        
+        partidas = c.fetchall()
+        
+        if partidas:
+            table = Table(title="Historial de Partidas",border_style='red')
 
+            table.add_column("Tirada #", style="cyan", justify="center")
+            table.add_column("Usuario", style="magenta", justify="center")
+            table.add_column("Apuesta (€)", style="green", justify="center")
+            table.add_column("Número ganador", style="yellow", justify="center")
+            table.add_column("Premio (€)", style="bold green", justify="center")
 
+            for partida in partidas:
+                table.add_row(
+                    str(partida[0]),
+                    partida[1],
+                    f"{partida[2]}€",
+                    str(partida[3]),
+                    f"{partida[4]}€"
+                )
 
+            console.print(table)
+        else:
+            console.print("[bold red]No hay partidas registradas en la base de datos.[/bold red]")
+
+        conn.close()
 

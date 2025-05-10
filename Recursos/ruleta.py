@@ -123,13 +123,9 @@ class Ruleta():
     return resultado
 
       
-  def buscar_apuesta(self,dinero,apuestas_jugador,numeros_sueltos):
+  def buscar_apuesta(self,dinero,apuestas_jugador,numeros_sueltos,resultado_rule):
 
-    # Numeros ramdom para las vueltas de la ruleta
-    iteraciones = random.randint(50, 200)
-
-    # Animamos la ruleta y guardamos el resultado
-    resultado_rule = self.animar_ruleta(iteraciones)
+    
     dinero_devolver = 0
 
 
