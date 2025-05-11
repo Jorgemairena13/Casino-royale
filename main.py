@@ -5,7 +5,7 @@ from Recursos.ruleta import *
 from Recursos.black_jack import *
 
 
-import sqlite3
+
 from os import system
 from rich import print 
 from rich.panel import Panel
@@ -31,6 +31,27 @@ def validar_saldo(saldo):
         except :
             print("Introduce un número válido.")
 
+def validar_campo_vacio(campo_validar):
+    '''
+    Valida que el campo que se le pasa no este vacio
+    '''
+    if str(campo_validar).strip() == '':
+        console.print(Panel('[bold #C70039]No se pueden introducir datos vacios!![/]',border_style='bold #C70039',width = 30))
+        return False
+    else:
+        return True
+    
+def validar_solo_letras(campo_validar):
+    '''
+    Valida que el campo que se le pase solo sea numerico
+    '''
+    campo_validar = campo_validar.replace(" ", "")
+    if campo_validar.isalpha():
+        return True
+    else:
+        console.print(Panel('[bold #C70039]Solo se pueden introducir letras!![/]',border_style='bold #C70039',width = 30))
+        return False
+
 
 console = Console()
 
@@ -48,54 +69,114 @@ gestion_db.crear_tabla_ruleta()
 
 
 def main():
-    #Validamos el inicio de sesion
-    
+    limpiar_pantalla()
+    console.print(banner_alineado)
+
+    # Título con estilo
+    titulo = Text("🎮 BIENVENIDO A CASINO ROYALE 🎮", style="bold magenta", justify="center")
+
+    # Tabla con opciones
+    tabla = Table.grid(padding=(0, 2))
+    tabla.add_row("[cyan]1.[/cyan]", "🔑 Iniciar Sesión")
+    tabla.add_row('')
+    tabla.add_row("[cyan]2.[/cyan]", "📝 Registrarse")
+    tabla.add_row('')
+    tabla.add_row("[cyan]0.[/cyan]", "🚪 Salir")
+
+    # Panel con alineación centrada
+    panel_menu = Panel(Align.center(tabla), title=titulo, border_style="bright_blue", padding=(1, 4))
+    console.print(Align.center(panel_menu))
+
+    opcion = console.input(Align.center("[bold green]Ingrese su elección: [/bold green]"))
+
     while True:
-
-        opcion = prompt('1. Si estas registrado\n2. Para registrarte\n',style=style)
-        if opcion =='1':
-
-                # Pedimos el email
-                correo = prompt("Introduce tu correo de inicio de sesion: ",style=style)
-
-                # Pedimos la contraseña
-                contrasena = prompt('Introduce tu contraseña: ',style=style)
-
-                # Validamos la sesion
-                validar_entrada = gestion_db.iniciar_sesion(correo,contrasena)
-
-                if validar_entrada:
-                    console.print(Panel(f'[bold #24fc69]Has iniciado sesion correctamente[/]',border_style='#24fc69',expand=False,width=30))
-                    prompt("Pulsa enter para continuar")
-                    break
-                else:
-                    
-                    continue
+        if opcion == '1':
+            limpiar_pantalla()
+            console.print(banner_alineado)
+            console.print(Panel("[bold cyan]INICIAR SESIÓN[/]", border_style="cyan", width=30))
+            correo = prompt("Correo: ", style=style)
+            contrasena = prompt("Contraseña: ", style=style)
+            
+            validar_entrada = gestion_db.iniciar_sesion(correo, contrasena)
+            
+            if validar_entrada:
+                console.print(Panel(f'[bold #24fc69]¡Bienvenido![/]', 
+                                border_style='#24fc69', 
+                                expand=False, 
+                                width=30))
+                prompt("Pulsa enter para continuar")
+                break
+            else:
+                continue
+            prompt()  
         elif opcion == '2':
-                # Pedimos los datos de registro
-                nombre = prompt('Introduce el tu nombre: ',style=style)
-                correo = prompt('Correo de inicio de sesion: ',style=style)
-                while True:
-                            try:
-                                fecha = prompt('Introduce la fecha de nacimiento [dd/mm/aa]: ', style=style)
-                                # Combrobamos que este vacia por si no quiere editar los datos
-                                datetime.strptime(fecha, '%d/%m/%Y')
-                                break
-                            except:
-                                console.print("[bold red]Fecha inválida[/]")
-                                continue
-                contrase = prompt('Intreduce tu contraseña: ',style=style)
-                saldo = float(prompt('Saldo para iniciar la cuenta: ',style=style))
-
-                if gestion_db.agregar_usuario(nombre,saldo,correo,fecha,contrase):
+            limpiar_pantalla()
+            console.print(banner_alineado)
+            console.print(Panel("[bold cyan]REGISTRO DE USUARIO[/]", border_style="cyan", width=30))
+            
+            while True:
+                        nombre = prompt("Nombre: ", style=style)
+                        if validar_campo_vacio(nombre) and validar_solo_letras(nombre):
+                            break
+                        else:
+                            continue
+            
+            while True:
+                        correo = prompt("Correo: ", style=style)
+                        if validar_campo_vacio(correo) and validar_solo_letras(correo):
+                            break
+                        else:
+                            continue
+            
+            while True:
+                try:
+                    fecha = prompt("Fecha de nacimiento [dd/mm/aaaa]: ", style=style)
+                    datetime.strptime(fecha, '%d/%m/%Y')
                     break
-                    
-                else:
+                except:
+                    console.print("[bold red]Fecha inválida[/]")
                     continue
+            
+            
+
+            while True:
+                        contrasena = prompt("Contraseña: ", style=style)
+                        if validar_campo_vacio(contrasena) and validar_solo_letras(contrasena):
+                            break
+                        else:
+                            continue
+
+            
+            while True:
+                        try:
+                            saldo = prompt("Saldo inicial: ", style=style)
+                            break
+                                
+                        except:
+                            console.print(Panel('[bold #C70039]No se puede introducir otra cosa que no sea un numero!![/]',border_style='bold #C70039',width = 30))
+                            continue
+            
+            if gestion_db.agregar_usuario(nombre, saldo, correo, fecha, contrasena):
+                console.print(Panel(f'[bold #24fc69]¡Registro exitoso![/]', 
+                                border_style='#24fc69', 
+                                expand=False, 
+                                width=30))
+                prompt("Pulsa enter para continuar")
+                break
+            else:
+                console.print(Panel("[bold red]El correo ya está registrado[/]", 
+                                border_style="red", 
+                                width=30))
+                prompt("Pulsa enter para continuar")
+                continue
                 
-    
+        elif opcion == '0':
+            console.print(Panel("[bold yellow]¡Gracias por jugar![/]", 
+                            border_style="yellow", 
+                            width=30))
+        
     while True:
-        #correo = 'jorge@'
+        
         saldo = gestion_db.sacar_saldo(correo)
         opcion = menu_principal()
         
@@ -118,7 +199,7 @@ def main():
                         
                         print(premio)
                         print(f'Tu saldo es de {saldo}')
-                        salida = prompt('Enter para tirar otra otra cosa para salir!!',style=style)
+                        salida = prompt('Enter para tirar otra tecla para salir!!',style=style)
                     gestion_db.actualizar_saldo(correo,saldo)
 
                 elif opcion_tragamonedas == '2':
@@ -140,7 +221,6 @@ def main():
 
                     # Lista que pasaremos a la funcion con la apuesta del usuario
                     apuestas_usuario = []
-
                     # Lista autocompletado
                     colores = ['Negro','Rojo']
                     colores_auto = FuzzyWordCompleter(colores)
@@ -202,25 +282,33 @@ def main():
                         numeros = prompt('Escribe los numeros que quieres apostar separados por espacios: ',style=style)
                         # Pasamos los numeros a enteros para comprobar despues
                         for numero in numeros.split():
-                            lista_numeros_sueltos.append(int(numero))
-                    
+                            if numero.isdigit():
+                                lista_numeros_sueltos.append(int(numero))
+                            else:
+                                console.print(f"[#ff0000 ][!] '{numero}' no es un número válido.[/]")
+                    for numero in lista_numeros_sueltos:
+                        console.print(numero,end="")
                         
                     # Le mostramos las apuestas que a hecho   
                     for apuesta in apuestas_usuario:
-                        console.print(Panel(apuesta),width=30)
+                        console.print(Panel(apuesta,border_style='#9a27ff '),width=30)
+                    print(" ") # Espacio
+                    console.print(Panel('Numeros apostados',width=30,border_style='#9a27ff '))
+                    for numero in lista_numeros_sueltos:
+                        console.print(numero,end="")
                     print(" ") # Espacio
 
                     # Le pedimos confimacion
-                    validar_apuesta = prompt('Estan  correctas la apuestas?[S/N]: ',style=style).upper()
+                    validar_apuesta = prompt('Estan correctas la apuestas?[S/N]: ',style=style).upper()
                     if validar_apuesta == "S":
                         # Numeros ramdom para las vueltas de la ruleta
-                        iteraciones = random.randint(50, 200)
+                        iteraciones = random.randint(50, 150)
 
                         # Animamos la ruleta y guardamos el resultado
                         numero_ganador = ruleta.animar_ruleta(iteraciones)
                         premio = ruleta.buscar_apuesta(dinero_apostado,apuestas_usuario,lista_numeros_sueltos,numero_ganador)
                          # Le pasamos el dinero y las apuestas del usuario
-                        console.print(Panel(f'Has ganado {premio} € y has apostado {dinero_apostado} y el numero es {numero_ganador}',width=30))
+                        console.print(Panel(f'[#6fff90]Has ganado {premio} € y has apostado {dinero_apostado}€ y el numero ganador es {numero_ganador}[/]',width=30,border_style='#6fff90'))
                         id = gestion_db.sacar_id(correo)
                         gestion_db.actualizar_partidas_ruleta(id,dinero_apostado,numero_ganador,premio)
                         saldo+=premio
@@ -231,6 +319,11 @@ def main():
                 elif opcion_ruleta == '2':
                     id = gestion_db.sacar_id(correo)
                     gestion_db.mostrar_datos_ruleta(id)
+                    prompt()
+
+                elif opcion_ruleta == '3':
+                    gestion_db.mostrar_estadisticas_ruleta()
+                    prompt()
                     prompt()    
                    
         elif opcion == "3":
@@ -298,47 +391,9 @@ def main():
                     for dato in resultados:
                         print(dato[0],dato[1],dato[2])
                     prompt()
-                
-                
-        elif opcion == "5":
-            limpiar_pantalla()
-            print("""[#FFC300 ]
-            📖 INSTRUCCIONES 📖
-            ==================[/][bold yellow]
-            🎰 TRAGAMONEDAS:
-            - Seleccione su apuesta
-            - Pulse para girar
-            - ¡Consiga 3 símbolos iguales para ganar![/]
-            [bold red]
-            🎲 RULETA:
-            - Elija el tipo de apuesta
-            - Seleccione sus números
-            - ¡Espere a que la bola se detenga![/]
-            [bold blue]
-            🃏 BLACK JACK:
-            - Apueste antes de recibir cartas
-            - Intente llegar a 21 sin pasarse
-            - Gane al crupier para duplicar su apuesta[/]
-            """)
-            prompt("\nPresione Enter para volver al menú principal...",style=style)
-            
-        elif opcion == "6":
-            limpiar_pantalla()
-            print("""
-            📊 ESTADÍSTICAS 📊
-            =================
-            🏆 Mayores Ganancias:
-            - Tragamonedas: $0
-            - Ruleta: $0
-            - Black Jack: $0
+        elif opcion == '5':
+            mostrar_reglas()
 
-            📈 Racha de victorias:
-            - Tragamonedas: 0
-            - Ruleta: 0
-            - Black Jack: 0
-            """)
-            prompt("\nPresione Enter para volver al menú principal...",style=style)
-            
         elif opcion == "0":
             limpiar_pantalla()
             console.print("""[#2848ff]

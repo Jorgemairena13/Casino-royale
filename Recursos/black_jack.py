@@ -1,6 +1,12 @@
 import random
 from time import sleep
 
+from rich.console import Console
+from rich.panel import Panel
+from rich import box
+console = Console()
+
+
 class Carta:
     def __init__(self, valor, palo):
         self.valor = valor
@@ -18,23 +24,24 @@ class Carta:
             return int(self.valor)
     
     def mostrar_carta(self):
-        simbolo = '♠' if self.palo == 'Picas' else '♥' if self.palo == 'Corazones' else '♦' if self.palo == 'Diamantes' else '♣'
+        simbolo = '♠'
+        # Preparar líneas con color y estilo
         return f"""
-        ┌───────┐
-        │{self.valor:<2}     │
-        │{simbolo}      │
-        │       │
-        │   {simbolo}   │
-        │       │
-        │      {simbolo}│
-        │     {self.valor:>2}│
-        └───────┘
-        """
+[white]┌───────┐[/]
+[white]│[/][bold white]{self.valor:<2}[/][white]     │[/]
+[white]│[/][bold black]{simbolo}      [/][white]│[/]
+[white]│       │[/]
+[white]│   [/][bold black]{simbolo}[/][white]   │[/]
+[white]│       │[/]
+[white]│      [/][bold black]{simbolo}[/][white]│[/]
+[white]│     [/][bold white]{self.valor:>2}[/][white]│[/]
+[white]└───────┘[/]
+"""
 
 class Baraja:
     def __init__(self):
         VALORES_CARTAS = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
-        PALOS = ['Picas', 'Corazones', 'Diamantes', 'Tréboles']
+        PALOS = ['Picas']
         self.cartas = [Carta(valor, palo) for valor in VALORES_CARTAS for palo in PALOS]
         self.mezclar()
         
@@ -45,7 +52,7 @@ class Baraja:
         if len(self.cartas) > 0:
             return self.cartas.pop()
         else:
-            print("¡La baraja está vacía!")
+            console.console.print("¡La baraja está vacía!")
             return None
 
 class Jugador:
@@ -79,10 +86,10 @@ class Jugador:
         self.plantado = True
     
     def mostrar_mano(self):
-        print("Tu mano:")
+        console.print("Tu mano:")
         for carta in self.mano:
-            print(carta.mostrar_carta())
-        print(f"Valor total: {self.valor_total}")
+            console.print(carta.mostrar_carta())
+        console.print(f"Valor total: {self.valor_total}")
 
 class Crupier(Jugador):
     def __init__(self):
@@ -94,31 +101,31 @@ class Crupier(Jugador):
         return ""
     
     def mostrar_mano_inicial(self):
-        print("Carta visible del crupier:")
-        print(self.mostrar_primera_carta())
-        print("Segunda carta oculta")
+        console.print("Carta visible del crupier:")
+        console.print(self.mostrar_primera_carta())
+        console.print("Segunda carta oculta")
     
     def jugar_turno(self, baraja):
-        print("Turno del crupier:")
-        print("Mano completa del crupier:")
+        console.print("Turno del crupier:")
+        console.print("Mano completa del crupier:")
         for carta in self.mano:
-            print(carta.mostrar_carta())
+            console.print(carta.mostrar_carta())
             
         # El crupier pide carta hasta tener 17 o más
         while self.valor_total < 17:
-            print("El crupier pide carta...")
+            console.print("El crupier pide carta...")
             sleep(1)  # Pausa para crear suspense
             nueva_carta = self.pedir_carta(baraja.dar_carta())
-            print(f"El crupier recibe: {nueva_carta}")
-            print(nueva_carta.mostrar_carta())
-            print(f"Valor total del crupier: {self.valor_total}")
+            console.print(f"El crupier recibe: {nueva_carta}")
+            console.print(nueva_carta.mostrar_carta())
+            console.print(f"Valor total del crupier: {self.valor_total}")
             
             if self.valor_total > 21:
-                print("¡El crupier se ha pasado!")
+                console.print("¡El crupier se ha pasado!")
                 break
         
         if self.valor_total <= 21:
-            print(f"El crupier se planta con {self.valor_total}")
+            console.print(f"El crupier se planta con {self.valor_total}")
 
 class Black_jack:
     def __init__(self,saldo):
@@ -127,8 +134,17 @@ class Black_jack:
         self.crupier = Crupier()
         self.saldo = saldo
     def iniciar_juego(self):
-        print("¡Bienvenido al Black Jack!")
-        print("Repartiendo cartas iniciales...")
+        
+        console.print(Panel.fit(
+            "🎲 [bold cyan]¡Bienvenido al Black Jack![/bold cyan] 🎲",
+            title="[bold green]Black Jack[/bold green]",
+            border_style="bright_magenta",
+            box=box.DOUBLE
+        ))
+
+        console.print("[bold yellow]Repartiendo cartas iniciales...[/bold yellow]\n")
+        input()
+
         
         # Dar dos cartas al jugador
         self.jugador.pedir_carta(self.baraja.dar_carta())
@@ -144,7 +160,7 @@ class Black_jack:
         
         # Verificar BlackJack natural
         if self.jugador.valor_total == 21:
-            print("¡Has ganado!")
+            console.print("¡Has ganado!")
             self.saldo *= 3
             return self.saldo
         
@@ -164,43 +180,43 @@ class Black_jack:
             
             if accion == 'p':
                 nueva_carta = self.jugador.pedir_carta(self.baraja.dar_carta())
-                print(f"Has recibido: {nueva_carta}")
-                print(nueva_carta.mostrar_carta())
+                console.print(f"Has recibido: {nueva_carta}")
+                console.print(nueva_carta.mostrar_carta())
                 self.jugador.mostrar_mano()
                 
                 if self.jugador.valor_total > 21:
-                    print("¡Te has pasado de 21! Has perdido.")
+                    console.print("¡Te has pasado de 21! Has perdido.")
                     break
             elif accion == 'm':
                 self.jugador.plantarse()
-                print("Te has plantado con", self.jugador.valor_total)
+                console.print("Te has plantado con", self.jugador.valor_total)
             else:
-                print("Opción no válida. Intenta de nuevo.")
+                console.print("Opción no válida. Intenta de nuevo.")
     
     def determinar_ganador(self):
-        print("\n--- Resultado final ---")
-        print(f"Tu puntuación: {self.jugador.valor_total}")
-        print(f"Puntuación del crupier: {self.crupier.valor_total}")
+        console.print("\n--- Resultado final ---")
+        console.print(f"Tu puntuación: {self.jugador.valor_total}")
+        console.print(f"Puntuación del crupier: {self.crupier.valor_total}")
         
         # Determinar ganador
         if self.jugador.valor_total > 21:
-            print("Has perdido por pasarte de 21.")
+            console.print("Has perdido por pasarte de 21.")
             self.saldo = 0
             return self.saldo
         elif self.crupier.valor_total > 21:
-            print("¡El crupier se ha pasado! ¡Has ganado!")
+            console.print("¡El crupier se ha pasado! ¡Has ganado!")
             self.saldo *= 2
             return self.saldo
         elif self.jugador.valor_total > self.crupier.valor_total:
-            print("¡Has ganado!")
+            console.print("¡Has ganado!")
             self.saldo *= 2
             return self.saldo
         elif self.jugador.valor_total < self.crupier.valor_total:
-            print("El crupier gana.")
+            console.print("El crupier gana.")
             self.saldo = 0
             return self.saldo
         else:
-            print("¡Empate!")
+            console.print("¡Empate!")
             # El saldo no cambia, recupera la apuesta
             return self.saldo
 

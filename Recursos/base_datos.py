@@ -181,8 +181,6 @@ class Base_de_datos():
         conn.close()
 
     def mostrar_partidas_tragaperras(self,id_usuario):
-    
-
         # Conexión a la base de datos
         conn = sqlite3.connect('casino_royale.db')
         c = conn.cursor()
@@ -192,10 +190,13 @@ class Base_de_datos():
 
         # Obtener todas las partidas de tragaperras
         c.execute("""
-        SELECT t.id_tirada, u.correo, t.premio, t.fecha
-        FROM tragaperras t
-        JOIN usuarios u ON t.id_usuario = u.id
-    """)
+            SELECT t.id_tirada, u.nombre, t.premio, t.fecha
+            FROM tragaperras t
+            JOIN usuarios u ON t.id_usuario = u.id
+            WHERE t.id_usuario = ?
+            ORDER BY t.fecha DESC
+        """, (id_usuario,))
+        
         partidas = c.fetchall()
 
         if partidas:
@@ -207,16 +208,9 @@ class Base_de_datos():
             table.add_column("Fecha", style="yellow", justify="center")
 
             for partida in partidas:
-                id_usuario = partida[1]
-
-                # Obtener correo del usuario
-                c.execute("SELECT correo FROM usuarios WHERE id = ?", (id_usuario,))
-                resultado = c.fetchone()
-                correo = resultado[0] if resultado else "Desconocido"
-
                 table.add_row(
                     str(partida[0]),
-                    correo,
+                    partida[1],
                     f"{partida[2]}€",
                     partida[3]
                 )
@@ -302,3 +296,66 @@ class Base_de_datos():
 
         conn.close()
 
+    def mostrar_estadisticas_ruleta(self):
+        # Conexión a la base de datos
+        conn = sqlite3.connect('casino_royale.db')
+        c = conn.cursor()
+
+        # Activar claves foráneas
+        c.execute("PRAGMA foreign_keys = ON;")
+
+        # Obtener estadísticas de números
+        c.execute("""
+            SELECT num_ganador, COUNT(*) as frecuencia
+            FROM ruleta
+            GROUP BY num_ganador
+            ORDER BY frecuencia DESC
+            LIMIT 10
+        """)
+        
+        estadisticas = c.fetchall()
+
+        if estadisticas:
+            table = Table(title="Top 10 Números más Frecuentes en la Ruleta")
+
+            table.add_column("Número", style="cyan", justify="center")
+            table.add_column("Frecuencia", style="magenta", justify="center")
+            table.add_column("Color", style="yellow", justify="center")
+
+            for numero, frecuencia in estadisticas:
+                # Determinar el color del número
+                if numero == 0:
+                    color = "Verde"
+                elif numero in [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35]:
+                    color = "Rojo"
+                else:
+                    color = "Negro"
+
+                table.add_row(
+                    str(numero),
+                    str(frecuencia),
+                    color
+                )
+
+            console.print(table)
+
+            # Mostrar estadísticas adicionales
+            c.execute("SELECT COUNT(*) FROM ruleta")
+            total_tiradas = c.fetchone()[0]
+            
+            console.print("\n[bold]Estadísticas Generales:[/bold]")
+            console.print(f"Total de tiradas registradas: {total_tiradas}")
+            
+            # Calcular porcentajes
+            for numero, frecuencia in estadisticas:
+                porcentaje = (frecuencia / total_tiradas) * 100
+                console.print(f"Número {numero}: {porcentaje:.2f}% de las tiradas")
+
+        else:
+            console.print("[bold red]No hay suficientes datos para mostrar estadísticas.[/bold red]")
+
+        conn.close()
+
+    
+
+    
