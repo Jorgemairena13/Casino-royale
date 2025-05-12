@@ -60,6 +60,7 @@ style = Style.from_dict({
     '': 'fg:#ffffff'
 })
 
+# Practica entorno comentario para el commit
 gestion_db = Base_de_datos()
 
 gestion_db.crear_tabla_usuarios()
